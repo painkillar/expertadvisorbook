@@ -46,10 +46,7 @@ fun ForexTradingApp() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Forex Trading") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+                title = { Text("Forex Trading") }
             )
         },
         bottomBar = {
