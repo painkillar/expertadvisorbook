@@ -44,10 +44,10 @@ fun ForexTradingApp() {
     val navController = rememberNavController()
     val viewModel: ForexViewModel = viewModel()
 
-    // Load data after UI is ready
-    LaunchedEffect(Unit) {
-        viewModel.loadAllData()
-    }
+    // Temporarily disable data loading to test UI
+    // LaunchedEffect(Unit) {
+    //     viewModel.loadAllData()
+    // }
 
     Scaffold(
         topBar = {
