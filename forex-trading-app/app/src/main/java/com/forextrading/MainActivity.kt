@@ -3,33 +3,23 @@ package com.forextrading
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.forextrading.ui.Screen
-import com.forextrading.ui.bottomNavItems
-import com.forextrading.ui.screens.*
-import com.forextrading.ui.theme.ForexTradingAppTheme
-import com.forextrading.viewmodel.ForexViewModel
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ForexTradingAppTheme {
+            MaterialTheme {
                 Surface(
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ForexTradingApp()
+                    TestScreen()
                 }
             }
         }
@@ -37,55 +27,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ForexTradingApp() {
-    val navController = rememberNavController()
-    val viewModel: ForexViewModel = viewModel()
-
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
-                bottomNavItems.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Dashboard.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(Screen.Dashboard.route) {
-                DashboardScreen(viewModel)
-            }
-            composable(Screen.DailyBias.route) {
-                DailyBiasScreen(viewModel)
-            }
-            composable(Screen.Economic.route) {
-                EconomicCalendarScreen(viewModel)
-            }
-            composable(Screen.News.route) {
-                NewsScreen(viewModel)
-            }
-            composable(Screen.COT.route) {
-                COTScreen(viewModel)
-            }
-        }
+fun TestScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Forex Trading App",
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "App is working! ✓",
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
