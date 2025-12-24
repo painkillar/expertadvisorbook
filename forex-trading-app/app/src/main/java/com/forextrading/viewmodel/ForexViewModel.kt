@@ -40,10 +40,6 @@ class ForexViewModel : ViewModel() {
     private val _selectedPair = MutableStateFlow<CurrencyPair?>(null)
     val selectedPair: StateFlow<CurrencyPair?> = _selectedPair.asStateFlow()
 
-    init {
-        loadAllData()
-    }
-
     fun loadAllData() {
         loadEconomicCalendar()
         loadNews()

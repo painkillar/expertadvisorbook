@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,6 +43,11 @@ class MainActivity : ComponentActivity() {
 fun ForexTradingApp() {
     val navController = rememberNavController()
     val viewModel: ForexViewModel = viewModel()
+
+    // Load data after UI is ready
+    LaunchedEffect(Unit) {
+        viewModel.loadAllData()
+    }
 
     Scaffold(
         topBar = {
