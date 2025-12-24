@@ -20,48 +20,32 @@ import com.forextrading.ui.theme.*
 import com.forextrading.viewmodel.ForexViewModel
 import com.forextrading.viewmodel.UiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EconomicCalendarScreen(viewModel: ForexViewModel) {
     val calendarState by viewModel.economicCalendar.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Economic Calendar") },
-                actions = {
-                    IconButton(onClick = { viewModel.loadEconomicCalendar() }) {
-                        Icon(Icons.Default.Refresh, "Refresh")
-                    }
-                }
-            )
+    when (calendarState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (calendarState) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                is UiState.Success -> {
-                    val calendar = (calendarState as UiState.Success).data
-                    EventsList(calendar.events)
-                }
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = (calendarState as UiState.Error).message,
-                            color = BearishRed
-                        )
-                    }
-                }
+        is UiState.Success -> {
+            val calendar = (calendarState as UiState.Success).data
+            EventsList(calendar.events)
+        }
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = (calendarState as UiState.Error).message,
+                    color = BearishRed
+                )
             }
         }
     }

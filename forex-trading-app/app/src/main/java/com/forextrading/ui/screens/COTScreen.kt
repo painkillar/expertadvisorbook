@@ -23,48 +23,32 @@ import com.forextrading.ui.theme.NeutralGray
 import com.forextrading.viewmodel.ForexViewModel
 import com.forextrading.viewmodel.UiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun COTScreen(viewModel: ForexViewModel) {
     val cotState by viewModel.cotReport.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("COT Report") },
-                actions = {
-                    IconButton(onClick = { viewModel.loadCOTReport() }) {
-                        Icon(Icons.Default.Refresh, "Refresh")
-                    }
-                }
-            )
+    when (cotState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (cotState) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                is UiState.Success -> {
-                    val cotReport = (cotState as UiState.Success).data
-                    COTList(cotReport.data)
-                }
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = (cotState as UiState.Error).message,
-                            color = BearishRed
-                        )
-                    }
-                }
+        is UiState.Success -> {
+            val cotReport = (cotState as UiState.Success).data
+            COTList(cotReport.data)
+        }
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = (cotState as UiState.Error).message,
+                    color = BearishRed
+                )
             }
         }
     }

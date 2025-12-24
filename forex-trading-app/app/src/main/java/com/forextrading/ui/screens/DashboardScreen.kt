@@ -24,48 +24,32 @@ import com.forextrading.ui.theme.CardDark
 import com.forextrading.viewmodel.ForexViewModel
 import com.forextrading.viewmodel.UiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(viewModel: ForexViewModel) {
     val quotesState by viewModel.quotes.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Forex Trading Dashboard") },
-                actions = {
-                    IconButton(onClick = { viewModel.refreshData() }) {
-                        Icon(Icons.Default.Refresh, "Refresh")
-                    }
-                }
-            )
+    when (quotesState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (quotesState) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                is UiState.Success -> {
-                    val quotes = (quotesState as UiState.Success<List<PairQuote>>).data
-                    QuotesList(quotes)
-                }
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = (quotesState as UiState.Error).message,
-                            color = BearishRed
-                        )
-                    }
-                }
+        is UiState.Success -> {
+            val quotes = (quotesState as UiState.Success<List<PairQuote>>).data
+            QuotesList(quotes)
+        }
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = (quotesState as UiState.Error).message,
+                    color = BearishRed
+                )
             }
         }
     }

@@ -27,52 +27,36 @@ import com.forextrading.ui.theme.NeutralGray
 import com.forextrading.viewmodel.ForexViewModel
 import com.forextrading.viewmodel.UiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DailyBiasScreen(viewModel: ForexViewModel) {
     val biasState by viewModel.dailyBias.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Daily Trading Bias - London Open") },
-                actions = {
-                    IconButton(onClick = { viewModel.loadDailyBias() }) {
-                        Icon(Icons.Default.Refresh, "Refresh")
-                    }
-                }
-            )
+    when (biasState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (biasState) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                is UiState.Success -> {
-                    val report = (biasState as UiState.Success).data
-                    DailyBiasContent(report.biases, report.marketOverview)
-                }
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = (biasState as UiState.Error).message,
-                                color = BearishRed
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(onClick = { viewModel.loadDailyBias() }) {
-                                Text("Retry")
-                            }
-                        }
+        is UiState.Success -> {
+            val report = (biasState as UiState.Success).data
+            DailyBiasContent(report.biases, report.marketOverview)
+        }
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = (biasState as UiState.Error).message,
+                        color = BearishRed
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { viewModel.loadDailyBias() }) {
+                        Text("Retry")
                     }
                 }
             }

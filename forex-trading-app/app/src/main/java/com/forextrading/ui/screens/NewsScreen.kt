@@ -26,48 +26,32 @@ import com.forextrading.viewmodel.UiState
 import java.text.SimpleDateFormat
 import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(viewModel: ForexViewModel) {
     val newsState by viewModel.news.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Forex News") },
-                actions = {
-                    IconButton(onClick = { viewModel.loadNews() }) {
-                        Icon(Icons.Default.Refresh, "Refresh")
-                    }
-                }
-            )
+    when (newsState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (newsState) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                is UiState.Success -> {
-                    val newsFeed = (newsState as UiState.Success).data
-                    NewsList(newsFeed.items)
-                }
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = (newsState as UiState.Error).message,
-                            color = BearishRed
-                        )
-                    }
-                }
+        is UiState.Success -> {
+            val newsFeed = (newsState as UiState.Success).data
+            NewsList(newsFeed.items)
+        }
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = (newsState as UiState.Error).message,
+                    color = BearishRed
+                )
             }
         }
     }
